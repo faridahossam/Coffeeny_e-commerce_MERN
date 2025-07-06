@@ -23,7 +23,13 @@ router.put("/items", validateJWT, async (req: ExtendRequest , res) => {
   const { productId, quantity } = req.body;
   const response = await updateItemInCart({ userId, productId, quantity })
   res.status(response.statusCode).send(response.data);
-  
+})
+
+router.delete("/items/:id", validateJWT, async (req: ExtendRequest, res) => {
+  const userId = req?.user?._id;
+  const { id } = req.params;
+  const response = await deleteItemInCart({ userId, productId, quantity });
+
 })
 
 export default router;
