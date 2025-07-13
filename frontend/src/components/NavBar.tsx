@@ -14,9 +14,13 @@ import { useAuth } from "../context/Auth/AuthContext";
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ShoppingCart from "@mui/icons-material/ShoppingCart";
+import Badge from "@mui/material/Badge";
+
+import MailIcon from "@mui/icons-material/Mail";
 
 function NavBar() {
-  const { username, isAuthenticated ,logout } = useAuth();
+  const { username, isAuthenticated, logout } = useAuth();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -29,6 +33,10 @@ function NavBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleCart = () => {
+    navigate("/cart");
   };
 
   const handleLogin = () => {
@@ -77,15 +85,26 @@ function NavBar() {
                 TECH HUB
               </Typography>
             </Box>
-            <Box sx={{ flexGrow: 0 }}>
+            <Box
+              gap={4}
+              display="flex"
+              flexDirection="row"
+              alignItems="center"
+              justifyItems="center"
+            >
+              <IconButton aria-label="cart" onClick={handleCart}>
+                <Badge badgeContent={4} color="secondary">
+                  <ShoppingCart sx={{ color: "#ffffff" }} />
+                </Badge>
+              </IconButton>
               {isAuthenticated ? (
                 <>
                   <Tooltip title="Open settings">
                     <Grid container alignItems="center" justifyItems="center">
-                      <Grid item>
+                      <Grid>
                         <Typography>{username}</Typography>
                       </Grid>
-                      <Grid item>
+                      <Grid>
                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                           <Avatar
                             alt={username || ""}
