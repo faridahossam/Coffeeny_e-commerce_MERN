@@ -16,10 +16,10 @@ import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import Badge from "@mui/material/Badge";
-
-import MailIcon from "@mui/icons-material/Mail";
+import { useCart } from "../context/Cart/CartContext";
 
 function NavBar() {
+  const { cartItems } = useCart();
   const { username, isAuthenticated, logout } = useAuth();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
@@ -62,29 +62,30 @@ function NavBar() {
               alignItems: "center",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <AdbIcon sx={{ display: "flex", mr: 1 }} />
-              <Typography
-                variant="h6"
-                noWrap
-                component="a"
+            <Button variant="text" sx={{color:"#fff"}} onClick={()=> navigate("/")}>
+              <Box
                 sx={{
-                  mr: 2,
-                  display: { xs: "none", md: "flex" },
-                  fontFamily: "monospace",
-                  fontWeight: 700,
-                  color: "inherit",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                TECH HUB
-              </Typography>
-            </Box>
+                <AdbIcon sx={{ display: "flex", mr: 1 }} />
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="a"
+                  sx={{
+                    mr: 2,
+                    display: {  md: "flex" },
+                    fontFamily: "monospace",
+                    fontWeight: 700,
+                  }}
+                >
+                  TECH HUB
+                </Typography>
+              </Box>
+            </Button>
             <Box
               gap={4}
               display="flex"
@@ -93,7 +94,7 @@ function NavBar() {
               justifyItems="center"
             >
               <IconButton aria-label="cart" onClick={handleCart}>
-                <Badge badgeContent={4} color="secondary">
+                <Badge badgeContent={cartItems.length} color="secondary">
                   <ShoppingCart sx={{ color: "#ffffff" }} />
                 </Badge>
               </IconButton>
