@@ -1,23 +1,46 @@
-import { Box, Container, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import { BASE_URL } from "../constants/BaseURL";
-import { useAuth } from "../context/Auth/AuthContext";
+import { Box, Button, ButtonGroup, Container, Typography } from "@mui/material";
 import { useCart } from "../context/Cart/CartContext";
 
-
 const CartPage = () => {
-  const { token } = useAuth();
-  const {cartItems, totalAmount} = useCart();
-  // const [error, setError] = useState("");
+  const { cartItems, totalAmount } = useCart();
 
   return (
-    <Container sx={{ mt: 2 }}>
-          <Typography variant="h4">My Cart</Typography>
-          {cartItems.map((item) => (
+    <Container fixed sx={{ mt: 2 }}>
+      <Typography variant="h4">My Cart</Typography>
+      <Box display="flex" flexDirection="column" gap={2}>
+        {cartItems.map((item) => (
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{
+              border: 1,
+              borderColor: "#f2f2f2",
+              borderRadius: 5,
+              padding: 1,
+            }}
+          >
+            <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+              <img src={item.image} width={100} />
               <Box>
-               {item.title}   
+                <Typography variant="h6">{item.title} </Typography>
+                <Typography>
+                  {item.quantity} x {item.unitPrice} EGP
+                </Typography>
+                <Button>Remove Item</Button>
               </Box>
-          ))}
+            </Box>
+            <ButtonGroup variant="contained" aria-label="Basic button group">
+              <Button>-</Button>
+              <Button>+</Button>
+            </ButtonGroup>
+          </Box>
+        ))}
+        <Box>
+          <Typography variant="h6">Total Amount: {totalAmount.toFixed(2)} EGP</Typography>
+        </Box>
+      </Box>
     </Container>
   );
 };
