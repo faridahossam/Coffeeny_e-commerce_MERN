@@ -1,5 +1,6 @@
 import { Box, Button, ButtonGroup, Container, Typography } from "@mui/material";
 import { useCart } from "../context/Cart/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const {
@@ -9,6 +10,8 @@ const CartPage = () => {
     removeItemFromCart,
     clearCart,
   } = useCart();
+
+  const navigate = useNavigate();
   const handleQuantity = (productId: string, quantity: number) => {
     if (quantity <= 0) {
       return;
@@ -18,8 +21,12 @@ const CartPage = () => {
   const handleRemoveItem = (productId: string) => {
     removeItemFromCart(productId);
   };
+  const handleCheckout = () => {
+    navigate("/checkout");
+  };
 
-  const renderCartItems = () => (<Box display="flex" flexDirection="column" gap={2}>
+  const renderCartItems = () => (
+    <Box display="flex" flexDirection="column" gap={2}>
       {cartItems.map((item) => (
         <Box
           display="flex"
@@ -59,14 +66,17 @@ const CartPage = () => {
           </ButtonGroup>
         </Box>
       ))}
-      <Box>
-        <Typography variant="h6">
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Typography variant="h5">
           Total Amount: {totalAmount.toFixed(2)} EGP
         </Typography>
+        <Button variant="contained" onClick={handleCheckout}>
+          Go TO CHECKOUT
+        </Button>
       </Box>
-  </Box>
-    );
-    
+    </Box>
+  );
+
   return (
     <Container fixed sx={{ mt: 2 }}>
       <Box
