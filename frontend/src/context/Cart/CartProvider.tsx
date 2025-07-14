@@ -11,7 +11,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [error, setError] = useState("");
 
-    useEffect(() => {
+  useEffect(() => {
     if (!token) {
       return;
     }
@@ -26,7 +26,15 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       }
       const cart = await response.json();
       const cartItemsMapped = cart.items.map(
-           ({ product, quantity, unitPrice }: { product: any; quantity: any; unitPrice: any; }) => ({
+        ({
+          product,
+          quantity,
+          unitPrice,
+        }: {
+          product: any;
+          quantity: any;
+          unitPrice: any;
+        }) => ({
           productId: product._id,
           title: product.title,
           image: product.image,
@@ -62,7 +70,15 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         setError("Failed to parse cart data");
       }
       const cartItemsMapped = cart.items.map(
-        ({ product, quantity, unitPrice }: { product: any; quantity: any; unitPrice: number; }) => ({
+        ({
+          product,
+          quantity,
+          unitPrice,
+        }: {
+          product: any;
+          quantity: any;
+          unitPrice: number;
+        }) => ({
           productId: product._id,
           title: product.title,
           image: product.image,
@@ -76,8 +92,102 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       console.error(error);
     }
   };
+
+  const updateItemInCart = async (productId: string, quantity: number) => {
+     try {
+       const response = await fetch(`${BASE_URL}/cart/items`, {
+         method: "PUT",
+         headers: {
+           "Content-Type": "application/json",
+           Authorization: `Bearer ${token}`,
+         },
+         body: JSON.stringify({
+           productId,
+           quantity: quantity,
+         }),
+       });
+
+       if (!response.ok) {
+         setError("Failed to update the cart");
+       }
+       const cart = await response.json();
+       if (!cart) {
+         setError("Failed to parse cart data");
+       }
+       const cartItemsMapped = cart.items.map(
+         ({
+           product,
+           quantity,
+           unitPrice,
+         }: {
+           product: any;
+           quantity: any;
+           unitPrice: number;
+         }) => ({
+           productId: product._id,
+           title: product.title,
+           image: product.image,
+           quantity,
+           unitPrice,
+         })
+       );
+       setCartItems([...cartItemsMapped]);
+       setTotalAmount(cart.totalAmount);
+     } catch (error) {
+       console.error(error);
+     }
+  };
+
+
+  const removeItemFromCart = async (productId: string) => {
+     try {
+       const response = await fetch(`${BASE_URL}/cart/items/${productId}`, {
+         method: "DELETE",
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+       });
+
+       if (!response.ok) {
+         setError("Failed to delete item from cart");
+       }
+       const cart = await response.json();
+       if (!cart) {
+         setError("Failed to parse cart data");
+       }
+       const cartItemsMapped = cart.items.map(
+         ({
+           product,
+           quantity,
+           unitPrice,
+         }: {
+           product: any;
+           quantity: any;
+           unitPrice: number;
+         }) => ({
+           productId: product._id,
+           title: product.title,
+           image: product.image,
+           quantity,
+           unitPrice,
+         })
+       );
+       setCartItems([...cartItemsMapped]);
+       setTotalAmount(cart.totalAmount);
+     } catch (error) {
+       console.error(error);
+     }
+  }
   return (
-    <CartContext.Provider value={{ cartItems, totalAmount, addItemToCart }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        totalAmount,
+        addItemToCart,
+        updateItemInCart,
+        removeItemFromCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
