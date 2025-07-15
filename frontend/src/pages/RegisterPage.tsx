@@ -3,8 +3,10 @@ import { useRef, useState } from "react";
 import { BASE_URL } from "../constants/BaseURL";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
+import CoffeeIcon from "@mui/icons-material/Coffee";
 
 const RegisterPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
@@ -21,85 +23,233 @@ const RegisterPage = () => {
     const password = passwordRef.current?.value;
 
     if (!firstName || !lastName || !email || !password) {
-      setError('Check submitted data');
+      setError("Please fill in all fields");
       return;
     }
 
-    //Make call to API to create user
-    const response = await fetch(`${BASE_URL}/user/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        email,
-        password,
-      }),
-    });
+    setIsLoading(true);
+    setError("");
 
-    if (!response.ok) {
-      setError(
-        "Unable to register user , please try out different credentials!"
-      );
-      return;
-    }
+    try {
+      const response = await fetch(`${BASE_URL}/user/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          password,
+        }),
+      });
 
-    const token = await response.json();
-    if (!token) {
-      setError("Incorrect Token!");
-      return;
-    }
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Registration failed. Please try again.");
+        return;
+      }
 
-    login(email, token)
+      const token = await response.json();
+      if (!token) {
+        setError("Authentication failed. Please try again.");
+        return;
+      }
+
+      login(email, token);
       navigate("/");
-    
+    } catch (err) {
+      setError("Network error. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <Container>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          mt: 4,
-        }}
-      >
-        <Typography variant="h6">Register Now Account</Typography>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#F5F0E8",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        py: 8,
+      }}
+    >
+      <Container maxWidth="xs">
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            mt: 2,
-            border: 1,
-            borderColor: "#f5f5f5",
-            p: 2,
+            backgroundColor: "#FFFFFF",
+            borderRadius: 4,
+            boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+            p: 4,
+            textAlign: "center",
           }}
         >
-          <TextField
-            inputRef={firstNameRef}
-            label="First Name"
-            name="firstName"
-          />
-          <TextField inputRef={lastNameRef} label="Last Name" name="lastName" />
-          <TextField inputRef={emailRef} label="Email" name="email" />
-          <TextField
-            inputRef={passwordRef}
-            label="Password"
-            name="password"
-            type="password"
-          />
-          <Button onClick={onSubmit} variant="contained">
-            Register
-          </Button>
-          {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
+          {/* Logo/Header */}
+          <Box sx={{ mb: 4 }}>
+            <CoffeeIcon
+              sx={{
+                fontSize: 48,
+                color: "#3E2723",
+                mb: 1,
+              }}
+            />
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                color: "#3E2723",
+                fontFamily: "'Playfair Display', serif",
+              }}
+            >
+              Coffeeny
+            </Typography>
+            <Typography variant="subtitle1" sx={{ color: "#6D4C41", mt: 1 }}>
+              Create your account
+            </Typography>
+          </Box>
+
+          {/* Error Message */}
+          {error && (
+            <Box
+              sx={{
+                backgroundColor: "#FFEBEE",
+                color: "#C62828",
+                p: 2,
+                borderRadius: 1,
+                mb: 2,
+              }}
+            >
+              <Typography variant="body2">{error}</Typography>
+            </Box>
+          )}
+
+          {/* Form */}
+          <Box
+            component="form"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <TextField
+                inputRef={firstNameRef}
+                label="First Name"
+                name="firstName"
+                fullWidth
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#D7CCC8",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#A1887F",
+                    },
+                  },
+                }}
+              />
+              <TextField
+                inputRef={lastNameRef}
+                label="Last Name"
+                name="lastName"
+                fullWidth
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#D7CCC8",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#A1887F",
+                    },
+                  },
+                }}
+              />
+            </Box>
+
+            <TextField
+              inputRef={emailRef}
+              label="Email"
+              name="email"
+              type="email"
+              fullWidth
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#D7CCC8",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#A1887F",
+                  },
+                },
+              }}
+            />
+            <TextField
+              inputRef={passwordRef}
+              label="Password"
+              name="password"
+              type="password"
+              fullWidth
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#D7CCC8",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#A1887F",
+                  },
+                },
+              }}
+            />
+
+            <Button
+              onClick={onSubmit}
+              variant="contained"
+              fullWidth
+              disabled={isLoading}
+              sx={{
+                mt: 2,
+                py: 1.5,
+                backgroundColor: "#3E2723",
+                "&:hover": {
+                  backgroundColor: "#5D4037",
+                },
+              }}
+            >
+              {isLoading ? "Creating account..." : "Register"}
+            </Button>
+          </Box>
+
+          {/* Footer Links */}
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="body2" sx={{ color: "#6D4C41" }}>
+              Already have an account?{" "}
+              <Typography
+                component="span"
+                sx={{
+                  color: "#3E2723",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+                onClick={() => navigate("/login")}
+              >
+                Sign in
+              </Typography>
+            </Typography>
+          </Box>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
+
 export default RegisterPage;

@@ -9,7 +9,6 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import { useAuth } from "../context/Auth/AuthContext";
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
@@ -17,14 +16,17 @@ import { useNavigate } from "react-router-dom";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import Badge from "@mui/material/Badge";
 import { useCart } from "../context/Cart/CartContext";
-
+import CoffeeIcon from "@mui/icons-material/Coffee";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import menuImage from "../images/istockphoto-1192341556-612x612.jpg";
 function NavBar() {
   const { cartItems } = useCart();
   const { username, isAuthenticated, logout } = useAuth();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
-
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const navigate = useNavigate();
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -35,9 +37,9 @@ function NavBar() {
     setAnchorElUser(null);
   };
 
-  const handleMyOrders= () => {
+  const handleMyOrders = () => {
     handleCloseUserMenu();
-    navigate("/my-orders")
+    navigate("/my-orders");
   };
 
   const handleCart = () => {
@@ -48,78 +50,179 @@ function NavBar() {
     navigate("/login");
   };
 
+  const handleRegister = () => {
+    navigate("/register");
+  };
+
   const handleLogout = () => {
     logout();
     navigate("/");
     handleCloseUserMenu();
   };
 
+  const handleOpenMenu = () => {
+    setMenuOpen(true);
+  };
+
+  const handleCloseMenu = () => {
+    setMenuOpen(false);
+  };
+
   return (
-    <AppBar position="static">
+    <AppBar
+      position="static"
+      sx={{ backgroundColor: "#3E2723", height: "80px" }}
+    >
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{ height: "100%" }}>
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
               justifyContent: "space-between",
-              width: "100%",
               alignItems: "center",
+              width: "100%",
             }}
           >
-            <Button variant="text" sx={{color:"#fff"}} onClick={()=> navigate("/")}>
-              <Box
+            {/* Left side - Logo and Navigation */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <Button
+                variant="text"
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
+                  color: "#fff",
+                  textTransform: "none",
+                  "&:hover": {
+                    backgroundColor: "rgba(255,255,255,0.1)",
+                  },
+                  padding: "8px 12px",
+                  borderRadius: "8px",
                 }}
+                onClick={() => navigate("/")}
               >
-                <AdbIcon sx={{ display: "flex", mr: 1 }} />
-                <Typography
-                  variant="h6"
-                  noWrap
-                  component="a"
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <CoffeeIcon sx={{ fontSize: "2rem" }} />
+                  <Typography
+                    variant="h4"
+                    noWrap
+                    component="span"
+                    sx={{
+                      fontFamily: "'Playfair Display', serif",
+                      fontWeight: 700,
+                      letterSpacing: "1px",
+                    }}
+                  >
+                    Coffeeny
+                  </Typography>
+                </Box>
+              </Button>
+
+              {/* Navigation Links */}
+              <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
+                <Button
+                  onClick={() => navigate("/")}
                   sx={{
-                    mr: 2,
-                    display: {  md: "flex" },
-                    fontFamily: "monospace",
-                    fontWeight: 700,
+                    color: "#fff",
+                    textTransform: "none",
+                    fontWeight: 500,
+                    "&:hover": {
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                    },
                   }}
                 >
-                  TECH HUB
-                </Typography>
+                  Home
+                </Button>
+                <Button
+                  onClick={handleOpenMenu}
+                  sx={{
+                    color: "#fff",
+                    textTransform: "none",
+                    fontWeight: 500,
+                    "&:hover": {
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                    },
+                  }}
+                >
+                  Menu
+                </Button>
               </Box>
-            </Button>
+            </Box>
+
+            {/* Right side - Cart and Auth */}
             <Box
-              gap={4}
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-              justifyItems="center"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: { xs: 1, md: 3 },
+              }}
             >
-              <IconButton aria-label="cart" onClick={handleCart}>
-                <Badge badgeContent={cartItems.length} color="secondary">
-                  <ShoppingCart sx={{ color: "#ffffff" }} />
-                </Badge>
-              </IconButton>
+              <Tooltip title="View Cart">
+                <IconButton
+                  aria-label="cart"
+                  onClick={handleCart}
+                  sx={{
+                    color: "#fff",
+                    "&:hover": {
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                    },
+                    padding: "8px",
+                  }}
+                >
+                  <Badge
+                    badgeContent={cartItems.length}
+                    color="secondary"
+                    sx={{
+                      "& .MuiBadge-badge": {
+                        right: -3,
+                        top: 5,
+                        border: `2px solid #3E2723`,
+                        padding: "0 4px",
+                      },
+                    }}
+                  >
+                    <ShoppingCart sx={{ fontSize: "1.8rem" }} />
+                  </Badge>
+                </IconButton>
+              </Tooltip>
+
               {isAuthenticated ? (
                 <>
-                  <Tooltip title="Open settings">
-                    <Grid container alignItems="center" justifyItems="center">
-                      <Grid>
-                        <Typography>{username}</Typography>
-                      </Grid>
-                      <Grid>
-                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                          <Avatar
-                            alt={username || ""}
-                            src="/static/images/avatar/2.jpg"
-                          />
-                        </IconButton>
-                      </Grid>
-                    </Grid>
+                  <Tooltip title="Account settings">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        cursor: "pointer",
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        "&:hover": {
+                          backgroundColor: "rgba(255,255,255,0.1)",
+                        },
+                      }}
+                      onClick={handleOpenUserMenu}
+                    >
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: 500,
+                          display: { xs: "none", sm: "block" },
+                        }}
+                      >
+                        {username}
+                      </Typography>
+                      <Avatar
+                        alt={username || ""}
+                        src="/static/images/avatar/2.jpg"
+                        sx={{
+                          width: 36,
+                          height: 36,
+                          bgcolor: "#D7CCC8",
+                          color: "#3E2723",
+                          fontWeight: "bold",
+                        }}
+                      />
+                    </Box>
                   </Tooltip>
+
                   <Menu
                     sx={{ mt: "45px" }}
                     id="menu-appbar"
@@ -137,31 +240,88 @@ function NavBar() {
                     onClose={handleCloseUserMenu}
                   >
                     <MenuItem onClick={handleMyOrders}>
-                      <Typography sx={{ textAlign: "center" }}>
-                        MyOrders
-                      </Typography>
+                      <Typography>My Orders</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleLogout}>
-                      <Typography sx={{ textAlign: "center" }}>
-                        Logout
-                      </Typography>
+                      <Typography>Logout</Typography>
                     </MenuItem>
                   </Menu>
                 </>
               ) : (
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={handleLogin}
-                >
-                  Login
-                </Button>
+                <>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    onClick={handleLogin}
+                    sx={{
+                      color: "#fff",
+                      borderColor: "rgba(255,255,255,0.5)",
+                      "&:hover": {
+                        backgroundColor: "rgba(255,255,255,0.1)",
+                        borderColor: "#fff",
+                      },
+                      px: 3,
+                    }}
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleRegister}
+                    sx={{
+                      backgroundColor: "#D7CCC8",
+                      color: "#3E2723",
+                      "&:hover": {
+                        backgroundColor: "#BCAAA4",
+                      },
+                      px: 3,
+                      fontWeight: 600,
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                </>
               )}
             </Box>
           </Box>
         </Toolbar>
       </Container>
+
+      {/* Menu Dialog */}
+      <Dialog open={menuOpen} onClose={handleCloseMenu} maxWidth="md" fullWidth>
+        <DialogContent>
+          <Box sx={{ textAlign: "center", p: 4 }}>
+            <Typography variant="h4" sx={{ mb: 4, color: "#3E2723" }}>
+              Our Menu
+            </Typography>
+            <img
+              src={ menuImage}
+              alt="Coffee Menu"
+              style={{
+                width: "100%",
+                height: "auto",
+                borderRadius: "8px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+              }}
+            />
+            <Button
+              onClick={handleCloseMenu}
+              variant="contained"
+              sx={{
+                mt: 4,
+                backgroundColor: "#3E2723",
+                "&:hover": {
+                  backgroundColor: "#5D4037",
+                },
+              }}
+            >
+              Close Menu
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </AppBar>
   );
 }
+
 export default NavBar;

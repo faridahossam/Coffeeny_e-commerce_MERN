@@ -29,71 +29,139 @@ const CartPage = () => {
     <Box display="flex" flexDirection="column" gap={2}>
       {cartItems.map((item) => (
         <Box
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center"
+          key={item.productId}
           sx={{
-            border: 1,
-            borderColor: "#f2f2f2",
-            borderRadius: 5,
-            padding: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            p: 2,
+            borderRadius: 3,
+            boxShadow: 1,
+            bgcolor: "#fff",
           }}
         >
-          <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-            <img src={item.image} width={100} />
+          <Box display="flex" alignItems="center" gap={2}>
+            <img
+              src={item.image}
+              alt={item.title}
+              style={{
+                width: 80,
+                height: 80,
+                objectFit: "cover",
+                borderRadius: 10,
+              }}
+            />
             <Box>
-              <Typography variant="h6">{item.title} </Typography>
-              <Typography>
+              <Typography variant="h6">{item.title}</Typography>
+              <Typography color="text.secondary">
                 {item.quantity} x {item.unitPrice} EGP
               </Typography>
-              <Button onClick={() => handleRemoveItem(item.productId)}>
-                Remove Item
+              <Button
+                size="small"
+                color="error"
+                onClick={() => handleRemoveItem(item.productId)}
+              >
+                Remove
               </Button>
             </Box>
           </Box>
-          <ButtonGroup variant="contained" aria-label="Basic button group">
+
+          <ButtonGroup size="small" variant="outlined" >
             <Button
               onClick={() => handleQuantity(item.productId, item.quantity - 1)}
+              sx={{
+                backgroundColor: "#D7CCC8",
+                color: "#3E2723",
+                "&:hover": {
+                  backgroundColor: "#BCAAA4",
+                },
+              }}
             >
               -
             </Button>
             <Button
+              disabled
+              sx={{
+                backgroundColor: "#D7CCC8",
+                color: "#3E2723",
+              }}
+            >
+              {item.quantity}
+            </Button>
+            <Button
               onClick={() => handleQuantity(item.productId, item.quantity + 1)}
+              sx={{
+                backgroundColor: "#D7CCC8",
+                color: "#3E2723",
+                "&:hover": {
+                  backgroundColor: "#BCAAA4",
+                },
+              }}
             >
               +
             </Button>
           </ButtonGroup>
         </Box>
       ))}
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <Typography variant="h5">
-          Total Amount: {totalAmount.toFixed(2)} EGP
+
+      <Box
+        mt={3}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Typography variant="h5" fontWeight="bold" sx={{ color: "#3E2723" }}>
+          Total: {totalAmount.toFixed(2)} EGP
         </Typography>
-        <Button variant="contained" onClick={handleCheckout}>
-          Go TO CHECKOUT
+        <Button
+          variant="contained"
+          size="large"
+          onClick={handleCheckout}
+          disabled={!cartItems.length}
+          sx={{
+            backgroundColor: "#D7CCC8",
+            color: "#3E2723",
+            "&:hover": {
+              backgroundColor: "#BCAAA4",
+            },
+            px: 3,
+            fontWeight: 600,
+          }}
+        >
+          Go to Checkout
         </Button>
       </Box>
     </Box>
   );
 
   return (
-    <Container fixed sx={{ mt: 2 }}>
-      <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="space-between"
-        sx={{ mb: 4 }}
-      >
-        <Typography variant="h4">My Cart</Typography>
-        <Button onClick={() => clearCart()}>Clear Cart</Button>
-      </Box>
-      {cartItems.length ? (
-        renderCartItems()
-      ) : (
-        <Typography>Your cart is empty. Please start shopping </Typography>
-      )}
-    </Container>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#F5F0E8", // Warm light beige background
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        py: 1,
+      }}
+    >
+      <Container fixed sx={{ mt: 0 }}>
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          sx={{ mb: 4 }}
+        >
+          <Typography variant="h4">My Cart</Typography>
+          <Button onClick={() => clearCart()}>Clear Cart</Button>
+        </Box>
+        {cartItems.length ? (
+          renderCartItems()
+        ) : (
+          <Typography>Your cart is empty. Please start shopping </Typography>
+        )}
+      </Container>
+    </Box>
   );
 };
 
