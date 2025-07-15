@@ -10,7 +10,6 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useAuth } from "../context/Auth/AuthContext";
-import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
@@ -123,6 +122,7 @@ function NavBar() {
                     color: "#fff",
                     textTransform: "none",
                     fontWeight: 500,
+                    fontSize: 18,
                     "&:hover": {
                       backgroundColor: "rgba(255,255,255,0.1)",
                     },
@@ -136,6 +136,7 @@ function NavBar() {
                     color: "#fff",
                     textTransform: "none",
                     fontWeight: 500,
+                    fontSize: 18,
                     "&:hover": {
                       backgroundColor: "rgba(255,255,255,0.1)",
                     },
@@ -168,13 +169,15 @@ function NavBar() {
                 >
                   <Badge
                     badgeContent={cartItems.length}
-                    color="secondary"
+                    // color="secondary"
                     sx={{
                       "& .MuiBadge-badge": {
                         right: -3,
                         top: 5,
                         border: `2px solid #3E2723`,
                         padding: "0 4px",
+                        backgroundColor: "#D7CCC8",
+                        color: "#3E2723",
                       },
                     }}
                   >
@@ -224,7 +227,15 @@ function NavBar() {
                   </Tooltip>
 
                   <Menu
-                    sx={{ mt: "45px" }}
+                    sx={{
+                      mt: "45px",
+                      "& .MuiPaper-root": {
+                        backgroundColor: "#FFFFFF",
+                        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                        borderRadius: 2,
+                        minWidth: "200px",
+                      },
+                    }}
                     id="menu-appbar"
                     anchorEl={anchorElUser}
                     anchorOrigin={{
@@ -239,11 +250,41 @@ function NavBar() {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    <MenuItem onClick={handleMyOrders}>
-                      <Typography>My Orders</Typography>
+                    <MenuItem
+                      onClick={handleMyOrders}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "#F5F0E8",
+                        },
+                        py: 1.5,
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          color: "#3E2723",
+                          fontFamily: "'Playfair Display', serif",
+                        }}
+                      >
+                        My Orders
+                      </Typography>
                     </MenuItem>
-                    <MenuItem onClick={handleLogout}>
-                      <Typography>Logout</Typography>
+                    <MenuItem
+                      onClick={handleLogout}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "#F5F0E8",
+                        },
+                        py: 1.5,
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          color: "#3E2723",
+                          fontFamily: "'Playfair Display', serif",
+                        }}
+                      >
+                        Logout
+                      </Typography>
                     </MenuItem>
                   </Menu>
                 </>
@@ -289,19 +330,41 @@ function NavBar() {
 
       {/* Menu Dialog */}
       <Dialog open={menuOpen} onClose={handleCloseMenu} maxWidth="md" fullWidth>
-        <DialogContent>
+        <DialogContent sx={{ backgroundColor: "#FFFFFF" }}>
           <Box sx={{ textAlign: "center", p: 4 }}>
-            <Typography variant="h4" sx={{ mb: 4, color: "#3E2723" }}>
-              Our Menu
-            </Typography>
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="h4" sx={{ color: "#3E2723" }}>
+                Our Menu
+              </Typography>
+              <Button
+                onClick={handleCloseMenu}
+                variant="contained"
+                sx={{
+                  // mt: 4,
+                  backgroundColor: "#3E2723",
+                  "&:hover": {
+                    backgroundColor: "#5D4037",
+                  },
+                }}
+              >
+                X
+              </Button>
+            </Box>
+
             <img
-              src={ menuImage}
+              src={menuImage}
               alt="Coffee Menu"
               style={{
                 width: "100%",
                 height: "auto",
                 borderRadius: "8px",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                marginTop: 4,
               }}
             />
             <Button

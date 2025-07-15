@@ -66,7 +66,25 @@ const CartPage = () => {
             </Box>
           </Box>
 
-          <ButtonGroup size="small" variant="outlined" >
+          <ButtonGroup
+            size="large"
+            variant="text"
+            sx={{
+              "& .MuiButton-root": {
+                // Styles for all buttons in the group
+                backgroundColor: "#D7CCC8",
+                color: "#3E2723",
+                borderRadius: "0", // Remove rounded corners for clean lines
+                borderRight: "1px solid #3E2723", // Add divider line
+                "&:last-child": {
+                  borderRight: "none", // Remove divider from last button
+                },
+                "&:hover": {
+                  backgroundColor: "#BCAAA4",
+                },
+              },
+            }}
+          >
             <Button
               onClick={() => handleQuantity(item.productId, item.quantity - 1)}
               sx={{
@@ -152,13 +170,32 @@ const CartPage = () => {
           justifyContent="space-between"
           sx={{ mb: 4 }}
         >
-          <Typography variant="h4">My Cart</Typography>
-          <Button onClick={() => clearCart()}>Clear Cart</Button>
+          <Typography
+            sx={{
+              color: "#3E2723",
+              fontFamily: "'Playfair Display', serif",
+            }}
+            variant="h4"
+          >
+            My Cart
+          </Typography>
+          {cartItems.length ? (
+          <Button size="small" color="error" onClick={() => clearCart()}>
+            Clear Cart
+          </Button>):""}
         </Box>
         {cartItems.length ? (
           renderCartItems()
         ) : (
-          <Typography>Your cart is empty. Please start shopping </Typography>
+          <Typography
+            sx={{
+              color: "#3E2723",
+              fontFamily: "'Playfair Display', serif",
+            }}
+            variant="h5"
+          >
+            Your cart is empty. Please start shopping{" "}
+          </Typography>
         )}
       </Container>
     </Box>
