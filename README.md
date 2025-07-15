@@ -31,6 +31,9 @@ A full-stack e-commerce application for a coffee shop built with:
 - npm i
 - npm run dev
 
+### Notes
+**First, you should login to add items to cart 
+
 ## Features
 - User registration and login
 - Product catalog
